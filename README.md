@@ -1,2 +1,7 @@
-# Mimic
-Code base for behavior cloning algorithms, built with simplicity in mind.
+# MinMic
+Minimalistic implementation of diffusion policy.
+
+
+## Debug
+python main.py --episodes 10 --epochs 1
+
