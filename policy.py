@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 # from encoder import MultiViewEncoder
 import torchvision
-
+from typing import Optional
 
 def build_fc(in_dim, hidden_dim, action_dim, num_layer, layer_norm, dropout):
     dims = [in_dim]
@@ -40,13 +40,13 @@ class BcPolicy(nn.Module):
         )
         self.cameras = cameras
 
-    def sample_action(self, obs):
-        """TODO: diffusion policy sampling"""
-        h = self.encoder(obs)
-        pred_action = self.policy(h)  # policy contains tanh
-        return pred_action
+    # def sample_action(self, obs):
+    #     """TODO: diffusion policy sampling"""
+    #     h = self.encoder(obs)
+    #     pred_action = self.policy(h)  # policy contains tanh
+    #     return pred_action
 
-    def forward(self, obs: dict[str, torch.Tensor], action: torch.Tensor):
+    def forward(self, obs: dict[str, torch.Tensor], action: Optional[torch.Tensor]=None):
         
         # forward encoder
         hs = []
@@ -57,17 +57,21 @@ class BcPolicy(nn.Module):
 
         h = torch.cat(hs, dim=1)
         pred_action = self.policy(h)  # policy contains tanh
-        loss = nn.functional.mse_loss(pred_action, action)        
         
-        return loss
+        if action is None:
+            return pred_action
+        else:
+            loss = nn.functional.mse_loss(pred_action, action)        
+            return loss
 
-    @torch.no_grad()
-    def act(self, obs: dict[str, torch.Tensor]):
-        """TODO: delete this?"""
-        assert not self.training  # model.eval() on
 
-        greedy_action = self.sample_action(obs)
-        return greedy_action  #.detach().cpu()
+    # @torch.no_grad()
+    # def act(self, obs: dict[str, torch.Tensor]):
+    #     """TODO: delete this?"""
+    #     assert not self.training  # model.eval() on
+
+    #     greedy_action = self.sample_action(obs)
+    #     return greedy_action  #.detach().cpu()
 
 
 if __name__ == '__main__':

@@ -1,6 +1,10 @@
 # robomimic dataset
+import os
+import json
 import h5py
 import numpy as np
+import robosuite
+from robosuite.controllers import load_controller_config
 
 
 class RobomimicDataset:
@@ -37,6 +41,26 @@ class RobomimicDataset:
 
         datafile.close()
 
+        config_path = os.path.join(os.path.dirname(path), "env_cfg.json")
+        self.env_config = json.load(open(config_path, "r"))
+        # breakpoint()
+        # Load the default controller configuration
+        controller_configs = load_controller_config(default_controller="OSC_POSE")
+        controller_configs['control_delta'] = self.env_config["env_kwargs"]["controller_configs"]["control_delta"]
+        self.env = robosuite.make(
+            env_name=self.env_config["env_name"],
+            robots=self.env_config["env_kwargs"]["robots"],
+            controller_configs=controller_configs,
+            has_offscreen_renderer=True,
+            use_camera_obs=True,
+            reward_shaping=False,
+            camera_names=cameras,
+            camera_heights=96,
+            camera_widths=96,
+            horizon=200,
+        )
+        # breakpoint()
+
     def __len__(self):
         return len(self.idx2entry)
 
@@ -45,7 +69,6 @@ class RobomimicDataset:
         obs = {}
         for camera in self.cameras:
             obs[camera] = self.obs[episode_id][camera][episode_entry_id]
-
         action = self.actions[episode_id][episode_entry_id]
         
         return obs, action
