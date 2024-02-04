@@ -35,10 +35,9 @@ for epoch in range(args.epochs):
     
     
     losses = []
-    for obs, action in train_loader:
+    for data in train_loader:
 
-        obs = {k: v.to(device) for k, v in obs.items()}
-        loss = policy(obs, action.to(device))
+        loss = policy({k: v.to(device) for k, v in data.items()})
         policy.zero_grad()
         loss.backward()
         optimizer.step()

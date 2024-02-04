@@ -46,12 +46,12 @@ class BcPolicy(nn.Module):
     #     pred_action = self.policy(h)  # policy contains tanh
     #     return pred_action
 
-    def forward(self, obs: dict[str, torch.Tensor], action: Optional[torch.Tensor]=None):
+    def forward(self, data: dict[str, torch.Tensor]):
         
         # forward encoder
         hs = []
         for i, camera in enumerate(self.cameras):
-            x = obs[camera]
+            x = data[camera]
             h = self.encoders[i](x)
             hs.append(h)
 
@@ -59,10 +59,10 @@ class BcPolicy(nn.Module):
         pred_action = self.policy(h)  # policy contains tanh
         # if action is not None:
             # print(f'{action.min()}, {action.max()}. {pred_action.min()}, {pred_action.max()}')
-        if action is None:
+        if data.get('action') is None:
             return pred_action
         else:
-            loss = nn.functional.mse_loss(pred_action, action)        
+            loss = nn.functional.mse_loss(pred_action, data['action'])        
             return loss
 
 

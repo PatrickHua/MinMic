@@ -66,12 +66,12 @@ class RobomimicDataset:
 
     def __getitem__(self, idx):
         episode_id, episode_entry_id = self.idx2entry[idx]
-        obs = {}
+        data = {}
         for camera in self.cameras:
-            obs[camera] = self.obs[episode_id][camera][episode_entry_id]
-        action = self.actions[episode_id][episode_entry_id]
+            data[camera] = self.obs[episode_id][camera][episode_entry_id]
+        data['action'] = self.actions[episode_id][episode_entry_id]
         
-        return obs, action
+        return data
 
 if __name__ == '__main__':
     dataset = RobomimicDataset(
@@ -79,5 +79,5 @@ if __name__ == '__main__':
         num_episode=1
     )
 
-    for obs, action in dataset:
-        breakpoint()
+    # for obs, action in dataset:
+    #     breakpoint()
