@@ -57,7 +57,8 @@ class BcPolicy(nn.Module):
 
         h = torch.cat(hs, dim=1)
         pred_action = self.policy(h)  # policy contains tanh
-        
+        # if action is not None:
+            # print(f'{action.min()}, {action.max()}. {pred_action.min()}, {pred_action.max()}')
         if action is None:
             return pred_action
         else:

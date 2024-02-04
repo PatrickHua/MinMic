@@ -32,10 +32,12 @@ class RobomimicDataset:
             episode_obs = {}
             episode_action = np.array(episode["actions"], dtype=np.float32)
             for camera in cameras:
+
                 episode_obs[camera] = np.array(episode[f"obs/{camera}_image"], dtype=np.float32)/255
-                # agentview, egoview
+
             self.obs.append(episode_obs)
             self.actions.append(episode_action)
+
             for e in range(episode_action.shape[0]):
                 self.idx2entry.append((episode_id, e))
 
@@ -43,7 +45,6 @@ class RobomimicDataset:
 
         config_path = os.path.join(os.path.dirname(path), "env_cfg.json")
         self.env_config = json.load(open(config_path, "r"))
-        # breakpoint()
         # Load the default controller configuration
         controller_configs = load_controller_config(default_controller="OSC_POSE")
         controller_configs['control_delta'] = self.env_config["env_kwargs"]["controller_configs"]["control_delta"]
@@ -57,9 +58,8 @@ class RobomimicDataset:
             camera_names=cameras,
             camera_heights=96,
             camera_widths=96,
-            horizon=200,
+            horizon=300,
         )
-        # breakpoint()
 
     def __len__(self):
         return len(self.idx2entry)
