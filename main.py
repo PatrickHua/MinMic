@@ -17,6 +17,7 @@ parser.add_argument('--cameras', nargs='+', default=['agentview', 'robot0_eye_in
 parser.add_argument('--eval_episodes', type=int, default=2)
 parser.add_argument('--output_dir', type=str, default='outputs/')
 parser.add_argument('--eval_interval', type=int, default=1, help='Evaluate every x epochs')
+parser.add_argument('--diffusion', action='store_true', help='use diffuion policy instead of regression')
 args = parser.parse_args()
 
 os.makedirs(args.output_dir, exist_ok=True)

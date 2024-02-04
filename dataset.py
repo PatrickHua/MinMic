@@ -37,7 +37,7 @@ class RobomimicDataset:
 
             self.obs.append(episode_obs)
             self.actions.append(episode_action)
-
+            # breakpoint()
             for e in range(episode_action.shape[0]):
                 self.idx2entry.append((episode_id, e))
 
@@ -79,5 +79,5 @@ if __name__ == '__main__':
         num_episode=1
     )
 
-    # for obs, action in dataset:
-    #     breakpoint()
+    for obs in dataset:
+        breakpoint()
